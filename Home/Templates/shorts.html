@@ -1,0 +1,1641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube Shorts</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            overflow: hidden;
+            height: 100vh;
+        }
+        
+        .header {
+            background-color: #0f0f0f;
+            padding: 0 16px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #303030;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .menu-icon {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            fill: white;
+        }
+        
+        .youtube-logo {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            text-decoration: none;
+            color: white;
+        }
+        
+        .youtube-icon {
+            background-color: #ff0000;
+            width: 32px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        
+        .search-container {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            max-width: 640px;
+            margin: 0 40px;
+            position: relative;
+        }
+        
+        .search-input {
+            background-color: #121212;
+            border: 1px solid #303030;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px 0 0 20px;
+            width: 100%;
+            height: 40px;
+            outline: none;
+        }
+        
+        .search-button {
+            background-color: #303030;
+            border: 1px solid #303030;
+            width: 64px;
+            height: 40px;
+            border-radius: 0 20px 20px 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .icon-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .notification-dot {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 6px;
+            height: 6px;
+            background-color: #ff0000;
+            border-radius: 50%;
+        }
+        
+        .create-button {
+            background-color: #272727;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 18px;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .sidebar-nav {
+            position: fixed;
+            left: -240px;
+            top: 56px;
+            width: 240px;
+            height: calc(100vh - 56px);
+            background-color: #0f0f0f;
+            border-right: 1px solid #303030;
+            overflow-y: auto;
+            transition: left 0.3s ease;
+            z-index: 999;
+            display: none;
+        }
+        
+        .sidebar-nav.open {
+            left: 0;
+            display: block;
+        }
+        
+        .nav-section {
+            padding: 12px 0;
+            border-bottom: 1px solid #303030;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            padding: 8px 24px;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .nav-item:hover {
+            background-color: #272727;
+        }
+        
+        .nav-item.active {
+            background-color: #272727;
+            font-weight: 500;
+        }
+        
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+        
+        .shorts-container {
+            position: fixed;
+            top: 56px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            overflow: hidden;
+        }
+        
+        .shorts-feed {
+            height: 100%;
+            transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            will-change: transform;
+        }
+        
+        .short-video {
+            height: calc(100vh - 56px);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #000000;
+        }
+        
+        .video-player {
+            position: relative;
+            width: min(100vw, 405px);
+            height: 100%;
+            background: #000000;
+            border-radius: 0;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .video-player iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background: #000000;
+        }
+        
+        .play-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80px;
+            height: 80px;
+            background-color: rgba(0,0,0,0.7);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            opacity: 1;
+            color: white;
+        }
+        
+        .play-overlay.hidden {
+            opacity: 0;
+        }
+        
+        .video-info {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 80px;
+            z-index: 10;
+        }
+        
+        .channel-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+        
+        .channel-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background-color: #ff4444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        
+        .channel-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: white;
+        }
+        
+        .subscribe-btn {
+            background-color: #ffffff;
+            color: #000000;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 18px;
+            font-size: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .subscribe-btn.subscribed {
+            background-color: #272727;
+            color: #ffffff;
+        }
+        
+        .video-title {
+            font-size: 14px;
+            line-height: 1.4;
+            color: white;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .video-description {
+            font-size: 14px;
+            color: #cccccc;
+            line-height: 1.4;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .music-info {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 8px;
+            padding: 8px;
+            background-color: rgba(0,0,0,0.6);
+            border-radius: 8px;
+            font-size: 12px;
+        }
+        
+        .music-icon {
+            width: 16px;
+            height: 16px;
+            animation: rotate 3s linear infinite;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .video-actions {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            z-index: 10;
+        }
+        
+        .action-button {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.1);
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            transition: all 0.2s;
+            position: relative;
+        }
+        
+        .action-button:hover {
+            background-color: rgba(255,255,255,0.2);
+            transform: scale(1.1);
+        }
+        
+        .action-button.liked {
+            color: #ff0000;
+        }
+        
+        .action-count {
+            position: absolute;
+            top: 52px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 12px;
+            color: white;
+            text-align: center;
+            min-width: 30px;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 998;
+            display: none;
+        }
+        
+        .overlay.show {
+            display: block;
+        }
+        
+        .navigation-arrows {
+            position: fixed;
+            right: 80px;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            z-index: 100;
+        }
+        
+        .nav-arrow {
+            width: 48px;
+            height: 48px;
+            background-color: rgba(255,255,255,0.1);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: white;
+            font-size: 24px;
+        }
+        
+        .nav-arrow:hover {
+            background-color: rgba(255,255,255,0.2);
+            transform: scale(1.1);
+        }
+        
+        .nav-arrow.disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+        
+        .nav-arrow.disabled:hover {
+            transform: none;
+            background-color: rgba(255,255,255,0.1);
+        }
+        
+        .loading-indicator {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-top: 3px solid #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            display: none;
+        }
+        
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+        
+        .video-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 8px;
+            z-index: 11;
+        }
+        
+        .control-button {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(0,0,0,0.6);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            transition: background-color 0.2s;
+        }
+        
+        .control-button:hover {
+            background-color: rgba(0,0,0,0.8);
+        }
+        
+        .nav-title {
+            color: #aaaaaa;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 8px 24px 4px 24px;
+        }
+        
+        .subscription-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 8px 24px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .subscription-item:hover {
+            background-color: #272727;
+        }
+        
+        .subscription-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Comments Section */
+        .comments-section {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 350px;
+            height: 100%;
+            background-color: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(10px);
+            border-left: 1px solid #303030;
+            transform: translateX(100%);
+            transition: transform 0.3s ease;
+            z-index: 15;
+            overflow-y: auto;
+        }
+
+        .comments-section.open {
+            transform: translateX(0);
+        }
+
+        .comments-header {
+            padding: 16px;
+            border-bottom: 1px solid #303030;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .comments-title {
+            font-size: 18px;
+            font-weight: 500;
+        }
+
+        .close-comments {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        .comments-list {
+            padding: 16px;
+        }
+
+        .comment {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .comment-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .comment-content {
+            flex: 1;
+        }
+
+        .comment-author {
+            font-size: 12px;
+            color: #aaa;
+            margin-bottom: 4px;
+        }
+
+        .comment-text {
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+
+        .comment-actions {
+            display: flex;
+            gap: 16px;
+            font-size: 12px;
+            color: #aaa;
+        }
+
+        .comment-action {
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .comment-action:hover {
+            color: white;
+        }
+
+        .add-comment {
+            position: sticky;
+            bottom: 0;
+            background-color: rgba(15, 15, 15, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 16px;
+            border-top: 1px solid #303030;
+        }
+
+        .comment-input-container {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .comment-input {
+            flex: 1;
+            background-color: #272727;
+            border: 1px solid #404040;
+            border-radius: 20px;
+            padding: 8px 16px;
+            color: white;
+            outline: none;
+        }
+
+        .send-comment {
+            background-color: #ff0000;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        /* TikTok-style Heart Animation */
+        .heart-animation {
+            position: absolute;
+            font-size: 100px;
+            color: #ff0000;
+            pointer-events: none;
+            z-index: 1000;
+            animation: heartPop 1.5s ease-out forwards;
+        }
+
+        @keyframes heartPop {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0);
+            }
+            15% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.3);
+            }
+            30% {
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+            45% {
+                transform: translate(-50%, -50%) scale(1.25);
+            }
+            60% {
+                transform: translate(-50%, -50%) scale(1.15);
+            }
+            75% {
+                transform: translate(-50%, -50%) scale(1.2);
+            }
+            85% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1.0);
+            }
+            100% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.5);
+            }
+        }
+
+        /* Floating hearts for double tap */
+        .floating-heart {
+            position: absolute;
+            font-size: 50px;
+            color: #ff0000;
+            pointer-events: none;
+            z-index: 999;
+            animation: floatUp 3s ease-out forwards;
+        }
+
+        @keyframes floatUp {
+            0% {
+                opacity: 1;
+                transform: translateY(0) scale(0.5);
+            }
+            10% {
+                transform: translateY(-10px) scale(1);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(-200px) scale(0.3);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .search-container {
+                display: none;
+            }
+            
+            .navigation-arrows {
+                display: none;
+            }
+            
+            .video-actions {
+                right: 8px;
+                z-index: 20;
+            }
+            
+            .video-info {
+                left: 12px;
+                right: 70px;
+            }
+
+            .comments-section {
+                width: 100%;
+            }
+            
+            .video-controls {
+                right: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay" id="overlay"></div>
+    
+    <div class="header">
+        <div class="header-left">
+            <svg class="menu-icon" id="menuIcon" viewBox="0 0 24 24">
+                <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+            </svg>
+            <a href="#" class="youtube-logo">
+                <div class="youtube-icon">▶</div>
+                <span style="font-size: 20px; font-weight: 500; margin-left: 2px;">YouTube</span>
+            </a>
+        </div>
+        
+        <div class="search-container">
+            <input type="text" class="search-input" placeholder="Search" value="">
+            <button class="search-button">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                </svg>
+            </button>
+        </div>
+        
+        <div class="header-right">
+            <button class="create-button" id="createButton">
+                ➕ Create
+            </button>
+            <button class="icon-button" id="notificationButton">
+                🔔
+                <div class="notification-dot"></div>
+            </button>
+            <button class="icon-button" style="background-color: #ff4444; color: white; font-size: 14px;">A</button>
+        </div>
+    </div>
+
+    <div class="sidebar-nav" id="sidebarNav">
+        <div class="nav-section">
+            <div class="nav-item" onclick="navigateToHome()">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                </svg>
+                Home
+            </div>
+            <div class="nav-item active">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path d="M18 4V3c0-.55-.45-1-1-1H5c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h12c.55 0 1-.45 1-1V6h2v10.5c0 .83-.67 1.5-1.5 1.5S16 17.33 16 16.5V15H5v1.5c0 .83-.67 1.5-1.5 1.5S2 17.33 2 16.5V3c0-1.1.9-2 2-2h12c1.1 0 2 .9 2 2v1z"/>
+                </svg>
+                Shorts
+            </div>
+            <div class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/>
+                </svg>
+                Subscriptions
+            </div>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-title">You</div>
+            <div class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.25 2.52.77-1.28-3.52-2.09V8z"/>
+                </svg>
+                History
+            </div>
+            <div class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path d="M14 10H2v2h12v-2zm0-4H2v2h12V6zm4 8v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM2 16h8v-2H2v2z"/>
+                </svg>
+                Playlists
+            </div>
+            <div class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24">
+                    <path d="M10 8v8l6-4-6-4zm9-5H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/>
+                </svg>
+                Your videos
+            </div>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-title">Subscriptions</div>
+            <div class="subscription-item">
+                <div class="subscription-avatar" style="background-color: #ff4444;">T</div>
+                TEDx Talks
+            </div>
+            <div class="subscription-item">
+                <div class="subscription-avatar" style="background-color: #ffa500;">K</div>
+                Knigra Deon
+            </div>
+            <div class="subscription-item">
+                <div class="subscription-avatar" style="background-color: #00ff00;">O</div>
+                The Organic Chemistry Tutor
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation-arrows" id="navigationArrows">
+        <button class="nav-arrow" id="upArrow">↑</button>
+        <button class="nav-arrow" id="downArrow">↓</button>
+    </div>
+
+    <div class="shorts-container" id="shortsContainer">
+        <div class="shorts-feed" id="shortsFeed">
+            <!-- Short Video 1 -->
+            <div class="short-video" data-video-id="1">
+                <div class="video-player" data-playing="false">
+                    <iframe 
+                        id="video1" 
+                        src="https://www.youtube.com/embed/thxy6zz2fXQ?autoplay=1&controls=0"
+                        allow="autoplay; encrypted-media"
+                        allowfullscreen>
+                    </iframe>
+                    <div class="play-overlay" id="playOverlay1">▶</div>
+                    
+                    <div class="video-controls">
+                        <button class="control-button" id="muteButton1">🔊</button>
+                        <button class="control-button" id="expandButton1">⛶</button>
+                    </div>
+                </div>
+                
+                <div class="video-info">
+                    <div class="channel-info">
+                        <div class="channel-avatar">J</div>
+                        <div class="channel-name">@narratorspeech</div>
+                        <button class="subscribe-btn" data-channel="narratorspeech">Subscribe</button>
+                    </div>
+                    <div class="video-title">Amazing Content You'll Love</div>
+                    <div class="video-description">Check out this incredible video that will blow your mind!</div>
+                    <div class="music-info">
+                        <div class="music-icon">🎵</div>
+                        <span>Original Sound - Trending Audio</span>
+                    </div>
+                </div>
+                
+                <div class="video-actions">
+                    <button class="action-button" data-action="like" data-video="1">
+                        ❤️
+                        <div class="action-count" id="likeCount1">4M</div>
+                    </button>
+                    <button class="action-button" data-action="dislike" data-video="1">
+                        👎
+                        <div class="action-count">Dislike</div>
+                    </button>
+                    <button class="action-button" data-action="comment" data-video="1">
+                        💬
+                        <div class="action-count" id="commentCount1">4,846</div>
+                    </button>
+                    <button class="action-button" data-action="share" data-video="1">
+                        📤
+                        <div class="action-count">Share</div>
+                    </button>
+                    <button class="action-button" data-action="more" data-video="1">
+                        ⋯
+                        <div class="action-count">33</div>
+                    </button>
+                </div>
+                
+                <!-- Comments Section for Video 1 -->
+                <div class="comments-section" id="commentsSection1">
+                    <div class="comments-header">
+                        <div class="comments-title">Comments</div>
+                        <button class="close-comments" onclick="closeComments(1)">✕</button>
+                    </div>
+                    <div class="comments-list" id="commentsList1">
+                        <!-- Comments will be populated by JavaScript -->
+                    </div>
+                    <div class="add-comment">
+                        <div class="comment-input-container">
+                            <input type="text" class="comment-input" placeholder="Add a comment..." id="commentInput1">
+                            <button class="send-comment" onclick="addComment(1)">Send</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="loading-indicator" id="loading1"></div>
+            </div>
+
+            <!-- Short Video 2 -->
+          
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let currentVideoIndex = 0;
+        let isTransitioning = false;
+        let touchStartY = 0;
+        let touchEndY = 0;
+        let currentPlayingVideo = null;
+        let isMuted = {};
+        let sidebarOpen = false;
+        
+        const shortsFeed = document.getElementById('shortsFeed');
+        const shortsContainer = document.getElementById('shortsContainer');
+        const totalVideos = 2;
+
+        // Sample comments data
+        const commentsData = {
+            1: [
+                { author: '@basketballfan23', avatar: 'B', color: '#ff6b6b', text: 'This is insane! How do you even practice this?', time: '2h', likes: 156 },
+                { author: '@sportslover', avatar: 'S', color: '#4ecdc4', text: 'I tried this and broke my ankle 😂', time: '4h', likes: 89 },
+                { author: '@hoopsdream', avatar: 'H', color: '#a29bfe', text: 'Tutorial please!', time: '6h', likes: 234 },
+                { author: '@ballislife', avatar: 'L', color: '#fd79a8', text: 'This guy is on another level', time: '1d', likes: 445 }
+            ],
+            2: [
+                { author: '@pcgamer2024', avatar: 'P', color: '#667eea', text: 'What specs are you running?', time: '1h', likes: 78 },
+                { author: '@rgbmaster', avatar: 'R', color: '#764ba2', text: 'RGB makes everything better!', time: '3h', likes: 156 },
+                { author: '@setupgoals', avatar: 'G', color: '#ff6b6b', text: 'Goals right here 🔥', time: '5h', likes: 234 }
+            ]
+        };
+
+        // Initialize video states
+        for (let i = 1; i <= totalVideos; i++) {
+            isMuted[i] = true;
+        }
+
+        // Sidebar functionality
+        const menuIcon = document.getElementById('menuIcon');
+        const sidebarNav = document.getElementById('sidebarNav');
+        const overlay = document.getElementById('overlay');
+
+        menuIcon.addEventListener('click', function() {
+            sidebarOpen = !sidebarOpen;
+            if (sidebarOpen) {
+                sidebarNav.classList.add('open');
+                overlay.classList.add('show');
+            } else {
+                sidebarNav.classList.remove('open');
+                overlay.classList.remove('show');
+            }
+        });
+
+        // Close sidebar when clicking overlay
+        overlay.addEventListener('click', function() {
+            sidebarOpen = false;
+            sidebarNav.classList.remove('open');
+            overlay.classList.remove('show');
+        });
+
+        // Comments functionality
+        function openComments(videoId) {
+            // Close any other open comments
+            for (let i = 1; i <= totalVideos; i++) {
+                if (i !== videoId) {
+                    closeComments(i);
+                }
+            }
+            
+            loadComments(videoId);
+            const commentsSection = document.getElementById(`commentsSection${videoId}`);
+            commentsSection.classList.add('open');
+        }
+
+        function closeComments(videoId) {
+            const commentsSection = document.getElementById(`commentsSection${videoId}`);
+            commentsSection.classList.remove('open');
+        }
+
+        function loadComments(videoId) {
+            const comments = commentsData[videoId] || [];
+            const commentsList = document.getElementById(`commentsList${videoId}`);
+            commentsList.innerHTML = '';
+            
+            comments.forEach(comment => {
+                const commentElement = document.createElement('div');
+                commentElement.className = 'comment';
+                commentElement.innerHTML = `
+                    <div class="comment-avatar" style="background-color: ${comment.color};">${comment.avatar}</div>
+                    <div class="comment-content">
+                        <div class="comment-author">${comment.author} • ${comment.time}</div>
+                        <div class="comment-text">${comment.text}</div>
+                        <div class="comment-actions">
+                            <span class="comment-action">👍 ${comment.likes}</span>
+                            <span class="comment-action">👎</span>
+                            <span class="comment-action">Reply</span>
+                        </div>
+                    </div>
+                `;
+                commentsList.appendChild(commentElement);
+            });
+        }
+
+        function addComment(videoId) {
+            const commentInput = document.getElementById(`commentInput${videoId}`);
+            const text = commentInput.value.trim();
+            if (text) {
+                addNewComment(videoId, text);
+                commentInput.value = '';
+            }
+        }
+
+        function addNewComment(videoId, text) {
+            const commentsList = document.getElementById(`commentsList${videoId}`);
+            const commentElement = document.createElement('div');
+            commentElement.className = 'comment';
+            commentElement.innerHTML = `
+                <div class="comment-avatar" style="background-color: #ff4444;">Y</div>
+                <div class="comment-content">
+                    <div class="comment-author">@you • now</div>
+                    <div class="comment-text">${text}</div>
+                    <div class="comment-actions">
+                        <span class="comment-action">👍 0</span>
+                        <span class="comment-action">👎</span>
+                        <span class="comment-action">Reply</span>
+                    </div>
+                </div>
+            `;
+            commentsList.insertBefore(commentElement, commentsList.firstChild);
+        }
+
+        // Navigation functions
+        function navigateToHome() {
+            console.log('Navigating to Home page...');
+        }
+
+        function goToNextVideo() {
+            if (isTransitioning || currentVideoIndex >= totalVideos - 1) return;
+            
+            isTransitioning = true;
+            pauseCurrentVideo();
+            currentVideoIndex++;
+            updateVideoPosition();
+            
+            setTimeout(() => {
+                isTransitioning = false;
+                playCurrentVideo();
+            }, 300);
+        }
+
+        function goToPreviousVideo() {
+            if (isTransitioning || currentVideoIndex <= 0) return;
+            
+            isTransitioning = true;
+            pauseCurrentVideo();
+            currentVideoIndex--;
+            updateVideoPosition();
+            
+            setTimeout(() => {
+                isTransitioning = false;
+                playCurrentVideo();
+            }, 300);
+        }
+
+        function updateVideoPosition() {
+            const translateY = -(currentVideoIndex * 100);
+            shortsFeed.style.transform = `translateY(${translateY}%)`;
+            updateNavigationArrows();
+        }
+
+        function updateNavigationArrows() {
+            const upArrow = document.getElementById('upArrow');
+            const downArrow = document.getElementById('downArrow');
+            
+            upArrow.classList.toggle('disabled', currentVideoIndex === 0);
+            downArrow.classList.toggle('disabled', currentVideoIndex === totalVideos - 1);
+        }
+
+        // Video playback functions
+        function playCurrentVideo() {
+            const currentVideo = document.querySelector(`[data-video-id="${currentVideoIndex + 1}"]`);
+            const playOverlay = currentVideo.querySelector('.play-overlay');
+            const loading = currentVideo.querySelector('.loading-indicator');
+            const iframe = currentVideo.querySelector('iframe');
+            
+            if (currentPlayingVideo && currentPlayingVideo !== currentVideoIndex + 1) {
+                pauseVideo(currentPlayingVideo);
+            }
+            
+            loading.style.display = 'block';
+            
+            // Update iframe src to start playing
+            const currentSrc = iframe.src;
+            if (!currentSrc.includes('autoplay=1')) {
+                iframe.src = currentSrc.replace('autoplay=0', 'autoplay=1');
+            }
+            
+            setTimeout(() => {
+                loading.style.display = 'none';
+                playOverlay.classList.add('hidden');
+                currentPlayingVideo = currentVideoIndex + 1;
+            }, 500);
+        }
+
+        function pauseCurrentVideo() {
+            if (currentPlayingVideo) {
+                pauseVideo(currentPlayingVideo);
+            }
+        }
+
+        function pauseVideo(videoId) {
+            const video = document.querySelector(`[data-video-id="${videoId}"]`);
+            const playOverlay = video.querySelector('.play-overlay');
+            const iframe = video.querySelector('iframe');
+            
+            playOverlay.classList.remove('hidden');
+            
+            // Stop the video by reloading iframe with autoplay=0
+            const currentSrc = iframe.src;
+            iframe.src = currentSrc.replace('autoplay=1', 'autoplay=0');
+        }
+
+        // Enhanced TikTok-style Heart Animation
+        function showTikTokHeartAnimation(element, x, y) {
+            // Main big heart animation
+            const bigHeart = document.createElement('div');
+            bigHeart.innerHTML = '❤️';
+            bigHeart.className = 'heart-animation';
+            bigHeart.style.left = x + 'px';
+            bigHeart.style.top = y + 'px';
+            element.appendChild(bigHeart);
+            
+            // Create multiple floating hearts
+            const heartCount = 5 + Math.floor(Math.random() * 3);
+            for (let i = 0; i < heartCount; i++) {
+                setTimeout(() => {
+                    const floatingHeart = document.createElement('div');
+                    floatingHeart.innerHTML = '❤️';
+                    floatingHeart.className = 'floating-heart';
+                    
+                    const offsetX = (Math.random() - 0.5) * 100;
+                    const offsetY = (Math.random() - 0.5) * 50;
+                    
+                    floatingHeart.style.left = (x + offsetX) + 'px';
+                    floatingHeart.style.top = (y + offsetY) + 'px';
+                    
+                    element.appendChild(floatingHeart);
+                    
+                    setTimeout(() => {
+                        if (floatingHeart.parentElement) {
+                            floatingHeart.parentElement.removeChild(floatingHeart);
+                        }
+                    }, 3000);
+                }, i * 100);
+            }
+            
+            setTimeout(() => {
+                if (bigHeart.parentElement) {
+                    bigHeart.parentElement.removeChild(bigHeart);
+                }
+            }, 1500);
+        }
+
+        // Touch/Swipe functionality
+        shortsContainer.addEventListener('touchstart', function(e) {
+            touchStartY = e.touches[0].clientY;
+        }, { passive: true });
+
+        shortsContainer.addEventListener('touchend', function(e) {
+            touchEndY = e.changedTouches[0].clientY;
+            handleSwipe();
+        }, { passive: true });
+
+        function handleSwipe() {
+            const swipeDistance = touchStartY - touchEndY;
+            const minSwipeDistance = 50;
+            
+            if (Math.abs(swipeDistance) > minSwipeDistance) {
+                if (swipeDistance > 0) {
+                    goToNextVideo();
+                } else {
+                    goToPreviousVideo();
+                }
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            switch(e.key) {
+                case 'ArrowUp':
+                    e.preventDefault();
+                    goToPreviousVideo();
+                    break;
+                case 'ArrowDown':
+                    e.preventDefault();
+                    goToNextVideo();
+                    break;
+                case ' ':
+                    e.preventDefault();
+                    togglePlayPause();
+                    break;
+                case 'Escape':
+                    closeAllComments();
+                    if (sidebarOpen) {
+                        sidebarOpen = false;
+                        sidebarNav.classList.remove('open');
+                        overlay.classList.remove('show');
+                    }
+                    break;
+            }
+        });
+
+        function togglePlayPause() {
+            const currentVideo = document.querySelector(`[data-video-id="${currentVideoIndex + 1}"]`);
+            const playOverlay = currentVideo.querySelector('.play-overlay');
+            
+            if (playOverlay.classList.contains('hidden')) {
+                pauseVideo(currentVideoIndex + 1);
+            } else {
+                playCurrentVideo();
+            }
+        }
+
+        function closeAllComments() {
+            for (let i = 1; i <= totalVideos; i++) {
+                closeComments(i);
+            }
+        }
+
+        // Navigation arrows
+        document.getElementById('upArrow').addEventListener('click', goToPreviousVideo);
+        document.getElementById('downArrow').addEventListener('click', goToNextVideo);
+
+        // Video player click handlers with improved touch detection
+        let isVideoPlayerClick = false;
+        
+        document.querySelectorAll('.video-player').forEach((player, index) => {
+            // Desktop click handler
+            player.addEventListener('click', function(e) {
+                const videoId = index + 1;
+                
+                if (currentVideoIndex === index) {
+                    const playOverlay = this.querySelector('.play-overlay');
+                    if (playOverlay.classList.contains('hidden')) {
+                        pauseVideo(videoId);
+                    } else {
+                        playCurrentVideo();
+                    }
+                }
+            });
+            
+            // Mobile touch handlers
+            player.addEventListener('touchstart', function(e) {
+                isVideoPlayerClick = true;
+            }, { passive: true });
+            
+            player.addEventListener('touchmove', function(e) {
+                isVideoPlayerClick = false; // If there's movement, it's not a tap
+            }, { passive: true });
+            
+            player.addEventListener('touchend', function(e) {
+                if (isVideoPlayerClick) {
+                    const videoId = index + 1;
+                    
+                    if (currentVideoIndex === index) {
+                        const playOverlay = this.querySelector('.play-overlay');
+                        if (playOverlay.classList.contains('hidden')) {
+                            pauseVideo(videoId);
+                        } else {
+                            playCurrentVideo();
+                        }
+                    }
+                }
+                isVideoPlayerClick = false;
+            });
+        });
+
+        // Subscribe button functionality
+        document.querySelectorAll('.subscribe-btn').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.stopPropagation();
+                
+                if (this.textContent === 'Subscribe') {
+                    this.textContent = 'Subscribed';
+                    this.classList.add('subscribed');
+                } else {
+                    this.textContent = 'Subscribe';
+                    this.classList.remove('subscribed');
+                }
+            });
+        });
+
+        // Action button functionality with improved mobile support
+        document.querySelectorAll('.action-button').forEach(button => {
+            // Desktop click
+            button.addEventListener('click', function(e) {
+                e.stopPropagation();
+                handleActionClick(this);
+            });
+            
+            // Mobile touch support
+            button.addEventListener('touchend', function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                handleActionClick(this);
+            });
+        });
+        
+        function handleActionClick(button) {
+            const action = button.dataset.action;
+            const videoId = button.dataset.video;
+            
+            switch(action) {
+                case 'like':
+                    toggleLike(button, videoId);
+                    break;
+                case 'dislike':
+                    toggleDislike(button, videoId);
+                    break;
+                case 'comment':
+                    openComments(parseInt(videoId));
+                    break;
+                case 'share':
+                    shareVideo(videoId);
+                    break;
+                case 'more':
+                    showMoreOptions(videoId);
+                    break;
+            }
+        }
+
+        function toggleLike(button, videoId) {
+            const isLiked = button.classList.contains('liked');
+            const countElement = button.querySelector('.action-count');
+            let count = parseFloat(countElement.textContent.replace(/[KM]/g, ''));
+            const unit = countElement.textContent.slice(-1);
+            
+            if (isLiked) {
+                button.classList.remove('liked');
+                count = Math.max(0, count - 0.1);
+            } else {
+                button.classList.add('liked');
+                count += 0.1;
+                const dislikeButton = button.parentElement.querySelector('[data-action="dislike"]');
+                dislikeButton.classList.remove('liked');
+                
+                // Show TikTok-style heart animation
+                const currentVideo = document.querySelector(`[data-video-id="${videoId}"]`);
+                const videoPlayer = currentVideo.querySelector('.video-player');
+                const rect = videoPlayer.getBoundingClientRect();
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                showTikTokHeartAnimation(videoPlayer, centerX, centerY);
+            }
+            
+            countElement.textContent = formatCount(count, unit);
+        }
+
+        function toggleDislike(button, videoId) {
+            const isDisliked = button.classList.contains('liked');
+            
+            if (isDisliked) {
+                button.classList.remove('liked');
+            } else {
+                button.classList.add('liked');
+                const likeButton = button.parentElement.querySelector('[data-action="like"]');
+                if (likeButton.classList.contains('liked')) {
+                    likeButton.classList.remove('liked');
+                    const countElement = likeButton.querySelector('.action-count');
+                    let count = parseFloat(countElement.textContent.replace(/[KM]/g, ''));
+                    const unit = countElement.textContent.slice(-1);
+                    countElement.textContent = formatCount(Math.max(0, count - 0.1), unit);
+                }
+            }
+        }
+
+        function shareVideo(videoId) {
+            if (navigator.share) {
+                navigator.share({
+                    title: `YouTube Short #${videoId}`,
+                    url: `${window.location.origin}/shorts/${videoId}`
+                });
+            } else {
+                navigator.clipboard.writeText(`${window.location.origin}/shorts/${videoId}`);
+                showToast('Link copied to clipboard!');
+            }
+        }
+
+        function showMoreOptions(videoId) {
+            showToast('More options menu would appear here');
+        }
+
+        function formatCount(count, unit) {
+            if (unit === 'M') {
+                return count.toFixed(1) + 'M';
+            } else if (unit === 'K') {
+                return count.toFixed(count >= 10 ? 0 : 1) + 'K';
+            }
+            return Math.round(count).toString();
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.style.cssText = `
+                position: fixed;
+                bottom: 20px;
+                left: 50%;
+                transform: translateX(-50%);
+                background-color: #272727;
+                color: white;
+                padding: 12px 24px;
+                border-radius: 8px;
+                font-size: 14px;
+                z-index: 10000;
+            `;
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            setTimeout(() => {
+                if (document.body.contains(toast)) {
+                    document.body.removeChild(toast);
+                }
+            }, 3000);
+        }
+
+        // Control button functionality
+        document.querySelectorAll('[id^="muteButton"]').forEach((button, index) => {
+            button.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const videoId = index + 1;
+                
+                if (isMuted[videoId]) {
+                    this.textContent = '🔊';
+                    isMuted[videoId] = false;
+                    showToast('Video unmuted');
+                } else {
+                    this.textContent = '🔇';
+                    isMuted[videoId] = true;
+                    showToast('Video muted');
+                }
+            });
+        });
+
+        document.querySelectorAll('[id^="expandButton"]').forEach((button, index) => {
+            button.addEventListener('click', function(e) {
+                e.stopPropagation();
+                const videoId = index + 1;
+                const iframe = document.getElementById(`video${videoId}`);
+                
+                if (iframe.requestFullscreen) {
+                    iframe.requestFullscreen();
+                } else if (iframe.webkitRequestFullscreen) {
+                    iframe.webkitRequestFullscreen();
+                } else if (iframe.mozRequestFullScreen) {
+                    iframe.mozRequestFullScreen();
+                } else if (iframe.msRequestFullscreen) {
+                    iframe.msRequestFullscreen();
+                }
+            });
+        });
+
+        // Header button functionality
+        document.getElementById('createButton').addEventListener('click', function() {
+            showToast('Create Shorts functionality');
+        });
+
+        document.getElementById('notificationButton').addEventListener('click', function() {
+            showToast('Notifications panel');
+        });
+
+        // Mouse wheel navigation
+        shortsContainer.addEventListener('wheel', function(e) {
+            e.preventDefault();
+            
+            if (isTransitioning) return;
+            
+            if (e.deltaY > 0) {
+                goToNextVideo();
+            } else {
+                goToPreviousVideo();
+            }
+        }, { passive: false });
+
+        // Double tap to like (mobile and desktop) - Fixed touch conflict
+        let lastTap = 0;
+        let singleClickTimer = null;
+        
+        document.querySelectorAll('.video-player').forEach((player, index) => {
+            // Mobile touch events for double tap
+            player.addEventListener('touchend', function(e) {
+                const currentTime = new Date().getTime();
+                const tapLength = currentTime - lastTap;
+                
+                if (tapLength < 500 && tapLength > 0) {
+                    // Double tap detected
+                    e.preventDefault();
+                    e.stopPropagation();
+                    
+                    const videoId = index + 1;
+                    const likeButton = this.parentElement.querySelector(`[data-action="like"][data-video="${videoId}"]`);
+                    
+                    const rect = this.getBoundingClientRect();
+                    const touch = e.changedTouches[0];
+                    const x = touch.clientX - rect.left;
+                    const y = touch.clientY - rect.top;
+                    
+                    // Always show heart animation on double tap
+                    showTikTokHeartAnimation(this, x, y);
+                    
+                    // Also toggle like if not already liked
+                    if (likeButton && !likeButton.classList.contains('liked')) {
+                        toggleLike(likeButton, videoId);
+                    }
+                    
+                    // Clear single tap action
+                    isVideoPlayerClick = false;
+                }
+                lastTap = currentTime;
+            });
+
+            // Desktop double click
+            let clickCount = 0;
+            player.addEventListener('click', function(e) {
+                clickCount++;
+                
+                if (clickCount === 1) {
+                    singleClickTimer = setTimeout(() => {
+                        if (clickCount === 1) {
+                            // Single click handled above
+                        } else if (clickCount === 2) {
+                            // Double click - like
+                            e.preventDefault();
+                            e.stopPropagation();
+                            
+                            const videoId = index + 1;
+                            const likeButton = this.parentElement.querySelector(`[data-action="like"][data-video="${videoId}"]`);
+                            
+                            const rect = this.getBoundingClientRect();
+                            const x = e.clientX - rect.left;
+                            const y = e.clientY - rect.top;
+                            
+                            // Always show heart animation on double click
+                            showTikTokHeartAnimation(this, x, y);
+                            
+                            // Also toggle like if not already liked
+                            if (likeButton && !likeButton.classList.contains('liked')) {
+                                toggleLike(likeButton, videoId);
+                            }
+                        }
+                        clickCount = 0;
+                    }, 300);
+                }
+            });
+        });
+
+        // Initialize
+        updateNavigationArrows();
+        
+        // Auto-play first video
+        setTimeout(() => {
+            playCurrentVideo();
+        }, 1000);
+
+        // Handle visibility change
+        document.addEventListener('visibilitychange', function() {
+            if (document.hidden) {
+                pauseCurrentVideo();
+            } else {
+                setTimeout(() => {
+                    if (!isTransitioning) {
+                        playCurrentVideo();
+                    }
+                }, 500);
+            }
+        });
+
+        // Comment input handlers
+        document.getElementById('commentInput1').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addComment(1);
+            }
+        });
+
+        document.getElementById('commentInput2').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                addComment(2);
+            }
+        });
+
+        // Comment actions
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('comment-action')) {
+                const action = e.target.textContent.trim();
+                if (action.includes('👍')) {
+                    const currentLikes = parseInt(action.split(' ')[1]) || 0;
+                    e.target.textContent = `👍 ${currentLikes + 1}`;
+                } else if (action === 'Reply') {
+                    showToast('Reply functionality would open here');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,525 @@
+{%extends 'base.html' %}
+
+<!-------------------Body----------------------------------->
+{%block content%}
+<style>
+    /* Scope body styles to avoid conflicts with base template */
+    main {
+        background-color: #1a1a1a;
+        color: #ffffff;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        margin: 0;
+        padding: 20px;
+        min-height: 100vh;
+    }
+
+  
+
+    main {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 80vh;
+        padding: 20px;
+    }
+
+    form {
+        background: linear-gradient(135deg, #2d2d2d 0%, #1e1e1e 100%);
+        border: 1px solid #404040;
+        border-radius: 15px;
+        padding: 40px;
+        width: 100%;
+        max-width: 500px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+        margin-top: 7%;
+    }
+
+    h3 {
+        color: #ffffff;
+        text-align: center;
+        margin-bottom: 30px;
+        font-size: 24px;
+        font-weight: 300;
+        letter-spacing: 1px;
+        margin-bottom: -10px;
+        font-weight: bold;
+    }
+
+    /* Form field styling */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    td {
+        padding: 10px 0;
+        vertical-align: top;
+    }
+
+    label {
+        color: #e0e0e0;
+        font-weight: 500;
+        margin-bottom: 8px;
+        display: block;
+        font-size: 14px;
+    }
+
+    input[type="text"],
+    input[type="email"],
+    input[type="password"],
+    input[type="file"],
+    textarea,
+    select {
+        width: 100%;
+        padding: 12px 15px;
+        background-color: #333333;
+        border: 2px solid #555555;
+        border-radius: 8px;
+        color: #ffffff;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+    }
+
+    input[type="text"]:focus,
+    input[type="email"]:focus,
+    input[type="password"]:focus,
+    input[type="file"]:focus,
+    textarea:focus,
+    select:focus {
+        outline: none;
+        border-color: #4a90e2;
+        box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.2);
+        background-color: #3a3a3a;
+    }
+
+    textarea {
+        min-height: 100px;
+        resize: vertical;
+        font-family: inherit;
+    }
+
+    /* File input styling */
+    input[type="file"] {
+        padding: 8px;
+        background-color: #2a2a2a;
+        cursor: pointer;
+    }
+
+    input[type="file"]::-webkit-file-upload-button {
+        background-color: #4a90e2;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-right: 10px;
+        transition: background-color 0.3s ease;
+    }
+
+    input[type="file"]::-webkit-file-upload-button:hover {
+        background-color: #357abd;
+    }
+
+    /* Submit button styling */
+    button[type="submit"] {
+        background: linear-gradient(135deg, #4a90e2 0%, #357abd 100%);
+        color: white;
+        border: none;
+        padding: 15px 30px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        margin-top: 20px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        box-shadow: 0 4px 15px rgba(74, 144, 226, 0.3);
+    }
+
+    button[type="submit"]:hover {
+        background: linear-gradient(135deg, #357abd 0%, #2968a3 100%);
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(74, 144, 226, 0.4);
+    }
+
+    button[type="submit"]:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 10px rgba(74, 144, 226, 0.3);
+    }
+
+    /* Error messages */
+    .error,
+    ul li {
+        color: #ff6b6b;
+        background-color: rgba(255, 107, 107, 0.1);
+        border: 1px solid rgba(255, 107, 107, 0.3);
+        border-radius: 5px;
+        padding: 10px;
+        margin: 5px 0;
+        font-size: 14px;
+    }
+
+    /* Help text */
+    .form-text,
+    .help-block,
+    .helptext {
+        color: #b0b0b0;
+        font-size: 12px;
+        margin-top: 5px;
+        line-height: 1.4;
+    }
+
+    /* Hide specific help text if needed */
+    #id_password2_helptext.helptext,
+    #id_username_helptext.helptext {
+        display: none;
+    }
+
+    /* Success/info messages */
+    span ul li {
+        color: #4ecdc4;
+        background-color: rgba(78, 205, 196, 0.1);
+        border: 1px solid rgba(78, 205, 196, 0.3);
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+        main {
+            padding: 10px;
+        }
+        
+        form {
+            padding: 30px 20px;
+            margin: 0 10px;
+        }
+        
+        h3 {
+            font-size: 20px;
+        }
+    }
+
+    /* Custom checkbox and radio styling */
+    input[type="checkbox"],
+    input[type="radio"] {
+        accent-color: #4a90e2;
+        margin-right: 8px;
+    }
+
+    /* Table styling for form layout */
+    table tr {
+        border: none;
+    }
+
+    table td:first-child {
+        width: 30%;
+        padding-right: 15px;
+    }
+
+    table td:last-child {
+        width: 70%;
+    }
+
+    /* Loading state for button */
+    button[type="submit"]:disabled {
+        background: #666666;
+        cursor: not-allowed;
+        transform: none;
+        box-shadow: none;
+    }
+
+    /* File preview styling */
+    .file-preview {
+        margin-top: 15px;
+        padding: 15px;
+        background-color: #2a2a2a;
+        border-radius: 8px;
+        border: 1px solid #404040;
+    }
+
+    .file-preview img {
+        max-width: 100%;
+        max-height: 200px;
+        border-radius: 5px;
+        display: block;
+        margin: 10px auto;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    }
+
+    .file-preview .file-info {
+        color: #b0b0b0;
+        font-size: 12px;
+        text-align: center;
+        margin-top: 8px;
+    }
+
+    .remove-file {
+        background-color: #ff6b6b;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 12px;
+        cursor: pointer;
+        margin-top: 10px;
+        transition: background-color 0.3s ease;
+    }
+
+    .remove-file:hover {
+        background-color: #ff5252;
+    }
+
+    /* Scope styles to prevent conflicts with header/navigation */
+    main form {
+        /* All form styles are now scoped to main form */
+    }
+
+    /* Override only form-specific elements, not global ones */
+    main form input[type="text"],
+    main form input[type="email"],
+    main form input[type="password"],
+    main form input[type="file"],
+    main form textarea,
+    main form select {
+        width: 100%;
+        padding: 12px 15px;
+        background-color: #333333;
+        border: 2px solid #555555;
+        border-radius: 8px;
+        color: #ffffff;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        box-sizing: border-box;
+    }
+
+    /* Reset any conflicting styles for elements outside the form */
+    header input,
+    nav input,
+    .search-bar input {
+        /* These will use default or base.html styles */
+        background-color: initial !important;
+        color: initial !important;
+        border: initial !important;
+    }
+</style>
+
+<main>
+    <form action="{%url 'create' %}" method="POST" enctype="multipart/form-data">
+        {%for message in messages%}
+        <p class="error">{{message}}</p>
+        {%endfor%}
+        
+        <h3>Upload to VidMax</h3>
+        
+        {%csrf_token%}
+        {{form.as_table}}
+        
+        <!-- File preview container -->
+        <div id="filePreview" class="file-preview" style="display: none;">
+            <h4 style="color: #ffffff; margin-bottom: 10px;">File Preview:</h4>
+            <div id="previewContent"></div>
+            <button type="button" class="remove-file" onclick="removeFile()">Remove File</button>
+        </div>
+        
+        <button type="submit">Submit</button>
+    </form>
+</main>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Find file input (Django generates different field names)
+    const fileInputs = document.querySelectorAll('input[type="file"]');
+    
+    fileInputs.forEach(function(fileInput) {
+        fileInput.addEventListener('change', function(event) {
+            handleFileSelect(event);
+        });
+    });
+});
+
+function handleFileSelect(event) {
+    const files = event.target.files;
+    const previewContainer = document.getElementById('filePreview');
+    const previewContent = document.getElementById('previewContent');
+    
+    if (files.length > 0) {
+        const file = files[0];
+        previewContent.innerHTML = '';
+        
+        // Show preview container
+        previewContainer.style.display = 'block';
+        
+        // Check if file is an image
+        if (file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                img.alt = 'File preview';
+                previewContent.appendChild(img);
+                
+                // Add file info
+                const fileInfo = document.createElement('div');
+                fileInfo.className = 'file-info';
+                fileInfo.textContent = `${file.name} (${formatFileSize(file.size)})`;
+                previewContent.appendChild(fileInfo);
+            };
+            reader.readAsDataURL(file);
+        } else {
+            // For non-image files, show file info
+            const fileInfo = document.createElement('div');
+            fileInfo.className = 'file-info';
+            fileInfo.innerHTML = `
+                <strong>📄 ${file.name}</strong><br>
+                Size: ${formatFileSize(file.size)}<br>
+                Type: ${file.type || 'Unknown'}
+            `;
+            previewContent.appendChild(fileInfo);
+        }
+    } else {
+        previewContainer.style.display = 'none';
+    }
+}
+
+function removeFile() {
+    // Find and clear file input
+    const fileInputs = document.querySelectorAll('input[type="file"]');
+    fileInputs.forEach(function(input) {
+        input.value = '';
+    });
+    
+    // Hide preview
+    document.getElementById('filePreview').style.display = 'none';
+}
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+}
+</script>
+
+<script>
+      // Sidebar toggle functionality
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            const overlay = document.querySelector('.sidebar-overlay');
+            
+            if (window.innerWidth <= 1024) {
+                // Mobile behavior
+                sidebar.classList.toggle('show');
+                overlay.classList.toggle('show');
+            } else {
+                // Desktop behavior
+                sidebar.classList.toggle('hidden');
+                mainContent.classList.toggle('sidebar-hidden');
+            }
+        }
+
+        // Theme toggle functionality
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('themeIcon');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.setAttribute('data-theme', 'light');
+                // Change to moon icon for light theme
+                themeIcon.innerHTML = '<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" fill="currentColor"/>';
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                // Change to sun icon for dark theme
+                themeIcon.innerHTML = '<path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41L6 7.41c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41L5.99 4.58zM18.36 16.95c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.42 1.42c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.42-1.42zm0-10.78l1.42-1.42c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.42 1.42c-.39.39-.39 1.03 0 1.41.39.38 1.03.39 1.41 0zM7.41 17.59c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0L4.58 17.6c-.39.39-.39 1.03 0 1.41.39.39 1.03.39 1.41 0L7.41 17.59z" fill="currentColor"/>';
+            }
+        }
+
+        // Search functionality
+     
+
+        function showSearchSuggestions() {
+            const suggestions = document.getElementById('searchSuggestions');
+            const input = document.querySelector('.search-input');
+            if (input.value.length > 0) {
+                suggestions.style.display = 'block';
+            }
+        }
+
+        function hideSearchSuggestions() {
+            setTimeout(() => {
+                const suggestions = document.getElementById('searchSuggestions');
+                suggestions.style.display = 'none';
+            }, 7000);
+        }
+
+    
+        function performSearch() {
+            const searchInput = document.querySelector('.search-input');
+            const query = searchInput.value.trim();
+            if (query) {
+                console.log('Searching for:', query);
+                // Add actual search functionality here
+                alert(`Searching for: "${query}"`);
+            }
+        }
+
+
+        let search_suggestions=document.querySelector('.search-suggestions')
+
+          $(document).on('keyup','.search-input',(e)=>{
+                e.preventDefault()
+                console.log('triggerd')
+                
+            let input=document.querySelector('.search-input').value
+            console.log(input)
+                $.ajax({
+                    type:'POST',
+                    url:'/search/',
+                    data:{
+                        'q':input,
+                        csrfmiddlewaretoken:'{{csrf_token}}'
+                    },
+                    
+                    success:function(response){
+                        search_suggestions.innerHTML=''
+                      showSearchSuggestions()
+                        //result.textContent=''
+
+                    if (typeof(response.suggestions)== 'string'){
+                        search_suggestions.insertAdjacentHTML("beforeend",`<div class="suggestion-item">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="currentColor"/>
+                        </svg>
+                       No results found
+                        </div>`)
+                        hideSearchSuggestions() 
+                    }else{
+                        
+                        response.suggestions.forEach(element => {
+                            search_suggestions.insertAdjacentHTML("beforeend", `
+                        <div class="suggestion-item">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="currentColor"/>
+                        </svg>
+                        ${element.title.toLowerCase()}
+                        </div>
+                            `
+                       
+                    )
+      
+                    });
+                      hideSearchSuggestions() 
+                    }  
+                    }
+                })
+                
+            })
+
+</script>
+
+{%endblock%}

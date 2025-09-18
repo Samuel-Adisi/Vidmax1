@@ -1,0 +1,682 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YouTube</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #0f0f0f;
+            --bg-secondary: #121212;
+            --bg-tertiary: #181818;
+            --text-primary: #fff;
+            --text-secondary: #aaa;
+            --border-color: #3f3f3f;
+            --hover-bg: #3f3f3f;
+            --accent-color: #ff0000;
+        }
+
+        [data-theme="light"] {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9f9f9;
+            --bg-tertiary: #f1f1f1;
+            --text-primary: #0f0f0f;
+            --text-secondary: #606060;
+            --border-color: #e0e0e0;
+            --hover-bg: #f0f0f0;
+            --accent-color: #ff0000;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Roboto', sans-serif;
+            overflow-x: hidden;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* Header */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 16px;
+            height: 56px;
+            background-color: var(--bg-primary);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+        }
+
+        .menu-btn {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            padding: 8px;
+            margin-right: 16px;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        .menu-btn:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .youtube-logo {
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .youtube-logo svg {
+            width: 24px;
+            height: 24px;
+            margin-right: 4px;
+            fill: var(--accent-color);
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 500;
+            letter-spacing: -1.5px;
+        }
+
+        .header-center {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            max-width: 600px;
+            margin: 0 40px;
+            position: relative;
+        }
+
+        .search-container {
+            display: flex;
+            flex: 1;
+            position: relative;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 12px 16px;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-size: 16px;
+            border-radius: 20px 0 0 20px;
+            outline: none;
+        }
+
+        .search-input:focus {
+            border-color: #1c62b9;
+        }
+
+        .search-btn {
+            padding: 12px 24px;
+            background-color: var(--hover-bg);
+            border: 1px solid var(--border-color);
+            border-left: none;
+            border-radius: 0 20px 20px 0;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+
+        .search-btn:hover {
+            background-color: var(--bg-tertiary);
+        }
+
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 80px;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            max-height: 400px;
+            overflow-y: auto;
+            z-index: 1001;
+            display: none;
+            margin-top: 4px;
+        }
+
+        .suggestion-item {
+            padding: 12px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            color: var(--text-primary);
+        }
+
+        .suggestion-item:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .suggestion-item svg {
+            width: 20px;
+            height: 20px;
+            margin-right: 16px;
+            fill: var(--text-secondary);
+        }
+
+        .mic-btn {
+            background-color: var(--bg-tertiary);
+            border: none;
+            padding: 12px;
+            margin-left: 8px;
+            border-radius: 50%;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+
+        .mic-btn:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .theme-btn, .create-btn, .notification-btn, .profile-btn {
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            padding: 8px;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        .theme-btn:hover, .create-btn:hover, .notification-btn:hover, .profile-btn:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .notification-badge {
+            position: relative;
+        }
+
+        .notification-badge::after {
+            content: '9+';
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background-color: var(--accent-color);
+            color: #fff;
+            border-radius: 10px;
+            padding: 2px 6px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 56px;
+            width: 240px;
+            height: calc(100vh - 56px);
+            background-color: var(--bg-primary);
+            overflow-y: auto;
+            padding: 12px 0;
+            z-index: 999;
+            transform: translateX(0);
+            transition: transform 0.3s ease;
+            scrollbar-width: none;
+        }
+
+        .sidebar.hidden {
+            transform: translateX(-100%);
+        }
+
+        .sidebar-section {
+            margin-bottom: 8px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 24px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 400;
+        }
+
+        .sidebar-item:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .sidebar-item.active {
+            background-color: var(--hover-bg);
+            font-weight: 500;
+        }
+
+        .sidebar-item svg {
+            width: 24px;
+            height: 24px;
+            margin-right: 24px;
+            fill: currentColor;
+        }
+
+        .sidebar-divider {
+            height: 1px;
+            background-color: var(--border-color);
+            margin: 12px 0;
+        }
+
+        .sidebar-title {
+            padding: 8px 24px;
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .subscription-item {
+            display: flex;
+            align-items: center;
+            padding: 8px 24px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        .subscription-item:hover {
+            background-color: var(--hover-bg);
+        }
+
+        .subscription-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            margin-right: 24px;
+            background-color: #ff6b6b;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Sidebar Overlay for Mobile */
+        .sidebar-overlay {
+            position: fixed;
+            top: 56px;
+            left: 0;
+            width: 100vw;
+            height: calc(100vh - 56px);
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 998;
+            display: none;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 240px;
+            margin-top: 56px;
+            padding: 0 24px;
+            transition: margin-left 0.3s ease;
+        }
+
+        .main-content.sidebar-hidden {
+            margin-left: 0;
+        }
+
+        /* Category Pills */
+        .category-pills-container {
+            position: sticky;
+            top: 56px;
+            background-color: var(--bg-primary);
+            z-index: 997;
+            padding: 16px 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .category-pills {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .category-pills::-webkit-scrollbar {
+            display: none;
+        }
+
+        .pill {
+            background-color: var(--hover-bg);
+            color: var(--text-primary);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            white-space: nowrap;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s;
+        }
+
+        .pill:hover {
+            background-color: var(--bg-tertiary);
+        }
+
+        .pill.active {
+            background-color: var(--text-primary);
+            color: var(--bg-primary);
+        }
+
+        /* Video Grid */
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px 16px;
+            padding: 20px 0 40px 0;
+        }
+
+        .video-card {
+            cursor: pointer;
+        }
+
+        .video-thumbnail {
+            position: relative;
+            width: 100%;
+            aspect-ratio: 16/9;
+            border-radius: 12px;
+            overflow: hidden;
+            background-color: var(--hover-bg);
+        }
+
+        .video-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .video-duration {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #fff;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .video-info {
+            display: flex;
+            padding: 12px 0 0 0;
+            gap: 12px;
+        }
+
+        .channel-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--bg-tertiary);
+            flex-shrink: 0;
+        }
+
+        .video-details {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .video-title {
+            font-size: 16px;
+            font-weight: 500;
+            line-height: 1.3;
+            margin-bottom: 6px;
+            color: var(--text-primary);
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .video-meta {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .channel-name {
+            color: var(--text-secondary);
+            margin-bottom: 2px;
+        }
+
+        .video-stats {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            
+            .sidebar-overlay.show {
+                display: block;
+            }
+            
+            .main-content {
+                margin-left: 0;
+            }
+            
+            .video-grid {
+                grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-center {
+                display: none;
+            }
+            
+            .video-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+        }
+    </style>
+</head>
+<body data-theme="dark">
+     <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <button class="menu-btn" onclick="toggleSidebar()">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                    <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z" fill="currentColor"/>
+                </svg>
+            </button>
+            <a href="/home/" class="youtube-logo">
+                <svg viewBox="0 0 24 24">
+                    <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/>
+                </svg>
+                <span class="logo-text">VidMax</span>
+            </a>
+        </div>
+        <div class="header-center">
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search" onfocus="showSearchSuggestions()" onblur="hideSearchSuggestions()">
+                <div class="search-suggestions" id="searchSuggestions">
+                    
+                </div>
+                <button class="search-btn" onclick="performSearch()">
+                    <svg viewBox="0 0 24 24" width="20" height="20">
+                        <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z" fill="currentColor"/>
+                    </svg>
+                </button>
+            </div>
+            <button class="mic-btn">
+                <svg viewBox="0 0 24 24" width="20" height="20">
+                    <path d="M12 14c1.66 0 2.99-1.34 2.99-3L15 5c0-1.66-1.34-3-3-3S9 3.34 9 5v6c0 1.66 1.34 3 3 3zm5.3-3c0 3-2.54 5.1-5.3 5.1S6.7 14 6.7 11H5c0 3.41 2.72 6.23 6 6.72V21h2v-3.28c3.28-.48 6-3.3 6-6.72h-1.7z" fill="currentColor"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="greet-user">
+
+        </div>
+        <div class="header-right">
+
+         
+
+            <button class="theme-btn" onclick="toggleTheme()">
+                <svg viewBox="0 0 24 24" width="24" height="24" id="themeIcon">
+                    <path d="M12 7c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5zM2 13h2c.55 0 1-.45 1-1s-.45-1-1-1H2c-.55 0-1 .45-1 1s.45 1 1 1zm18 0h2c.55 0 1-.45 1-1s-.45-1-1-1h-2c-.55 0-1 .45-1 1s.45 1 1 1zM11 2v2c0 .55.45 1 1 1s1-.45 1-1V2c0-.55-.45-1-1-1s-1 .45-1 1zm0 18v2c0 .55.45 1 1 1s1-.45 1-1v-2c0-.55-.45-1-1-1s-1 .45-1 1zM5.99 4.58c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41L6 7.41c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41L5.99 4.58zM18.36 16.95c-.39-.39-1.03-.39-1.41 0-.39.39-.39 1.03 0 1.41l1.42 1.42c.39.39 1.03.39 1.41 0 .39-.39.39-1.03 0-1.41l-1.42-1.42zm0-10.78l1.42-1.42c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0l-1.42 1.42c-.39.39-.39 1.03 0 1.41.39.38 1.03.39 1.41 0zM7.41 17.59c.39-.39.39-1.03 0-1.41-.39-.39-1.03-.39-1.41 0L4.58 17.6c-.39.39-.39 1.03 0 1.41.39.39 1.03.39 1.41 0L7.41 17.59z" fill="currentColor"/>
+                </svg>
+            </button>
+            
+            <button class="notification-btn notification-badge">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                    <path d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.89 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z" fill="currentColor"/>
+                </svg>
+            </button>
+
+            {%if request.user.is_authenticated%}
+            <button class="logout-btn">
+                <a href="{% url 'signout' %}" style="text-decoration: none; color: black; font-weight: bolder; font-size: 15px;">
+                    <p>Logout ➡️</p>
+                </a>
+            </button>
+            
+            {%else%}
+
+            <button class="login-btn">
+                <a href="{% url 'signin' %}" style="text-decoration: none; color: black; font-weight: bolder; font-size: 15px;">
+                    <p> ⬅️Sign in </p>
+                </a>
+            </button>
+
+            {%endif%}
+
+
+        </div>
+    </header>
+
+
+    <!-- Sidebar Overlay -->
+    <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+    <!-- Sidebar -->
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-section">
+            <a href="/home/" class="sidebar-item active">
+                <svg viewBox="0 0 24 24">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+                </svg>
+                Home
+            </a>
+            <a href="{% url 'shorts' %}" class="sidebar-item">
+                <svg viewBox="0 0 24 24">
+                    <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"/>
+                </svg>
+                Shorts
+            </a>
+            <a href="#" class="sidebar-item">
+                <svg viewBox="0 0 24 24">
+                    <path d="M18.77 11h-4.23l1.52-4.94C16.38 5.03 15.54 4 14.38 4c-.58 0-1.14.24-1.52.65L7.23 10H3v10h4.23l5.62 5.35c.38.41.94.65 1.52.65 1.16 0 2-.97 1.68-2.06L14.53 19h4.23c1.1 0 2-.9 2-2v-4c.01-1.1-.89-2-1.99-2zM7 18H5v-6h2v6zm11-1h-4.05l.9 2.94c.1.32-.04.69-.33.85-.18.1-.4.07-.54-.05L9 15.35V12.65l4.98-5.39c.14-.12.36-.15.54-.05.29.16.43.53.33.85L13.95 11H18v6z"/>
+                </svg>
+                Subscriptions
+            </a>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-title">You</div>
+            <a href="#" class="sidebar-item">
+                <svg viewBox="0 0 24 24">
+                    <path d="M14.97 16.95L10 13.87V7h2v5.76l4.03 2.49-1.06 1.7zM12 3c-4.97 0-9 4.03-9 9s4.02 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/>
+                </svg>
+                History
+            </a>
+            <a href="#" class="sidebar-item">
+                <svg viewBox="0 0 24 24">
+                    <path d="M14 6V4h-4v2h4zM4 8v11h16V8H4zm16-2c1.11 0 2 .89 2 2v11c0 1.11-.89 2-2 2H4c-1.11 0-2-.89-2-2l.01-11c0-1.11.88-2 1.99-2h4V4c0-1.11.89-2 2-2h4c1.11 0 2 .89 2 2v2h4z"/>
+                </svg>
+                Playlists
+            </a>
+            <a href="#" class="sidebar-item">
+                <svg viewBox="0 0 24 24">
+                    <path d="M18 4l2 4h-3l-2-4h-2l2 4h-3l-2-4H8l2 4H7L5 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V4h-4z"/>
+                </svg>
+                Your videos
+            </a>
+            <a href="#" class="sidebar-item">
+                <svg viewBox="0 0 24 24">
+                    <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/>
+                </svg>
+                Watch later
+            </a>
+            <a href="#" class="sidebar-item">
+                <svg viewBox="0 0 24 24">
+                    <path d="M16.5 3c-1.74 0-3.41.81-4.5 2.09C10.91 3.81 9.24 3 7.5 3 4.42 3 2 5.42 2 8.5c0 3.78 3.4 6.86 8.55 11.54L12 21.35l1.45-1.32C18.6 15.36 22 12.28 22 8.5 22 5.42 19.58 3 16.5 3zm-4.4 15.55l-.1.1-.1-.1C7.14 14.24 4 11.39 4 8.5 4 6.5 5.5 5 7.5 5c1.54 0 3.04.99 3.57 2.36h1.87C13.46 5.99 14.96 5 16.5 5c2 0 3.5 1.5 3.5 3.5 0 2.89-3.14 5.74-7.9 10.05z"/>
+                </svg>
+                Liked videos
+            </a>
+        </div>
+
+        <div class="sidebar-divider"></div>
+
+        <div class="sidebar-section">
+            <div class="sidebar-title">Subscriptions</div>
+            <a href="#" class="subscription-item">
+                <div class="subscription-avatar" style="background-color: #ff4444;">T</div>
+                TEDx Talks
+            </a>
+            <a href="#" class="subscription-item">
+                <div class="subscription-avatar" style="background-color: #44ff44;">K</div>
+                Kinigra Deon
+            </a>
+            <a href="#" class="subscription-item">
+                <div class="subscription-avatar" style="background-color: #4444ff;">J</div>
+                JG
+            </a>
+            <a href="#" class="subscription-item">
+                <div class="subscription-avatar" style="background-color: #ffaa44;">T</div>
+                The Organic Chemistry Tutor
+            </a>
+            <a href="#" class="subscription-item">
+                <div class="subscription-avatar" style="background-color: #ff44aa;">E</div>
+                Engineering with Utsav
+            </a>
+            <a href="#" class="subscription-item">
+                <div class="subscription-avatar" style="background-color: #44aaff;">T</div>
+                Tech With Tim
+            </a>
+        </div>
+    </nav>
+
+    {%block content%}
+
+    {% endblock %}
+
+</body>
+
+</html>

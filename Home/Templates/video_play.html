@@ -1,0 +1,1538 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A Day in the Life of a Tech Startup CEO - YouTube</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        
+        .create-btn{
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-decoration: none;
+            color: black;
+            border-radius: 10px;
+           
+        }
+        
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #0f0f0f;
+            color: #ffffff;
+            overflow-x: hidden;
+            transition: margin-left 0.3s ease;
+        }
+        
+        .sidebar-open {
+            margin-left: 240px;
+        }
+        
+        .header {
+            background-color: #0f0f0f;
+            padding: 0 16px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #303030;
+        }
+        
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .menu-icon {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            fill: white;
+        }
+        
+        .youtube-logo {
+            display: flex;
+            align-items: center;
+            gap: 2px;
+            text-decoration: none;
+            color: white;
+        }
+        
+        .youtube-icon {
+            background-color: #ff0000;
+            width: 32px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 3px;
+            font-weight: bold;
+            font-size: 12px;
+        }
+        
+        .search-container {
+            display: flex;
+            align-items: center;
+            flex: 1;
+            max-width: 640px;
+            margin: 0 40px;
+            position: relative;
+        }
+        
+        .search-input {
+            background-color: #121212;
+            border: 1px solid #303030;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px 0 0 20px;
+            width: 100%;
+            height: 40px;
+            outline: none;
+        }
+        
+        .search-input:focus {
+            border-color: #065fd4;
+        }
+        
+        .search-button {
+            background-color: #303030;
+            border: 1px solid #303030;
+            width: 64px;
+            height: 40px;
+            border-radius: 0 20px 20px 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .search-suggestions {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 64px;
+            background-color: #212121;
+            border: 1px solid #303030;
+            border-radius: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1001;
+            display: none;
+        }
+        
+        .suggestion-item-search {
+            padding: 8px 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            border-bottom: 1px solid #303030;
+        }
+        
+        .suggestion-item-search:hover {
+            background-color: #272727;
+        }
+        
+        .suggestion-item-search:last-child {
+            border-bottom: none;
+        }
+        
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+        
+        .icon-button {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .sidebar-nav {
+            position: fixed;
+            left: -240px;
+            top: 56px;
+            width: 240px;
+            height: calc(100vh - 56px);
+            background-color: #0f0f0f;
+            border-right: 1px solid #303030;
+            overflow-y: auto;
+            transition: left 0.3s ease;
+            z-index: 999;
+            scrollbar-width: none;
+
+        }
+        
+        .sidebar-nav.open {
+            left: 0;
+        }
+        
+        .nav-section {
+            padding: 12px 0;
+            border-bottom: 1px solid #303030;
+        }
+        
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            padding: 8px 24px;
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        
+        .nav-item:hover {
+            background-color: #272727;
+        }
+        
+        .nav-item.active {
+            background-color: #272727;
+            font-weight: 500;
+        }
+        
+        .nav-icon {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+        
+        .nav-title {
+            color: #aaaaaa;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 8px 24px 4px 24px;
+        }
+        
+        .subscription-item {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 8px 24px;
+            cursor: pointer;
+        }
+        
+        .subscription-item:hover {
+            background-color: #272727;
+        }
+        
+        .subscription-avatar {
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            background-color: #ff4444;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        
+        .main-content {
+            display: flex;
+            max-width: 1754px;
+            margin: 0 auto;
+            gap: 24px;
+            padding: 20px;
+            transition: margin-left 0.3s ease;
+        }
+        
+        .video-section {
+            flex: 1;
+            min-width: 0;
+        }
+        
+      
+       
+        
+        
+        .time-display {
+            color: white;
+            font-size: 14px;
+        }
+        
+        .video-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #ffffff;
+            margin-bottom: 8px;
+            line-height: 1.3;
+        }
+        
+        .video-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 16px;
+        }
+        
+        .channel-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .channel-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #3ea6ff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+        }
+        
+        .channel-details h3 {
+            color: #ffffff;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 2px;
+        }
+        
+        .subscriber-count {
+            color: #aaaaaa;
+            font-size: 12px;
+        }
+        
+        .video-actions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .action-button {
+            background-color: #272727;
+            border: none;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+            transition: background-color 0.2s;
+        }
+        
+        .action-button:hover {
+            background-color: #3f3f3f;
+        }
+        
+        .action-button.liked {
+            color: #3ea6ff;
+        }
+        
+        .subscribe-button {
+            background-color: #ffffff;
+            color: #000000;
+            font-weight: 500;
+            padding: 8px 16px;
+            border-radius: 18px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        
+        .subscribe-button.subscribed {
+            background-color: #272727;
+            color: #ffffff;
+        }
+        
+        .video-description {
+            background-color: #272727;
+            padding: 16px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .video-description:hover {
+            background-color: #3f3f3f;
+        }
+        
+        .description-header {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .description-text {
+            color: #cccccc;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+        
+        .description-expanded {
+            display: none;
+        }
+        
+        .show-more {
+            color: #3ea6ff;
+            cursor: pointer;
+        }
+        
+        .comments-section {
+            margin-top: 24px;
+        }
+        
+        .comments-header {
+            display: flex;
+            align-items: center;
+            gap: 32px;
+            margin-bottom: 24px;
+        }
+        
+        .comments-count {
+            font-size: 16px;
+            font-weight: 500;
+        }
+        
+        .sort-button {
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .comment-input-container {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 32px;
+            position: relative;
+        }
+        
+        .comment-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #666;
+            flex-shrink: 0;
+        }
+        
+        .comment-input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+        
+        .comment-input-field {
+            width: 100%;
+            background: none;
+            border: none;
+            border-bottom: 1px solid #303030;
+            color: white;
+            padding: 8px 0;
+            outline: none;
+            font-size: 14px;
+        }
+        
+        .comment-input-field:focus {
+            border-bottom-color: #ffffff;
+        }
+        
+        .comment-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            margin-top: 8px;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        
+        .comment-actions.visible {
+            opacity: 1;
+        }
+        
+        .cancel-button, .comment-button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 18px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .cancel-button {
+            background: none;
+            color: #aaaaaa;
+        }
+        
+        .cancel-button:hover {
+            background-color: #272727;
+        }
+        
+        .comment-button {
+            background-color: #065fd4;
+            color: white;
+            opacity: 0.5;
+            cursor: not-allowed;
+            transition: all 0.2s;
+        }
+        
+        .comment-button.active {
+            opacity: 1;
+            cursor: pointer;
+        }
+        
+        .comment-button.active:hover {
+            background-color: #0f7ae5;
+        }
+        
+        .comment {
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .comment-content {
+            flex: 1;
+        }
+        
+        .comment-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+        
+        .comment-author {
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        .comment-time {
+            color: #aaaaaa;
+            font-size: 12px;
+        }
+        
+        .comment-text {
+            color: #ffffff;
+            font-size: 14px;
+            line-height: 1.4;
+            margin-bottom: 8px;
+        }
+        
+        .comment-buttons {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .comment-button-action {
+            background: none;
+            border: none;
+            color: #aaaaaa;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 18px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            transition: background-color 0.2s;
+        }
+        
+        .comment-button-action:hover {
+            background-color: #272727;
+        }
+        
+        .comment-button-action.liked {
+            color: #3ea6ff;
+        }
+        
+        .sidebar {
+            width: 402px;
+            flex-shrink: 0;
+        }
+        
+        .video-suggestions {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        
+        .suggestion-item {
+            display: flex;
+            gap: 8px;
+            padding: 8px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        .suggestion-item:hover {
+            background-color: #272727;
+        }
+        
+        .suggestion-thumbnail {
+            width: 168px;
+            height: 94px;
+            border-radius: 8px;
+            background-color: #303030;
+            flex-shrink: 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .suggestion-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .thumbnail-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+        }
+        
+        .duration {
+            position: absolute;
+            bottom: 4px;
+            right: 4px;
+            background-color: rgba(0,0,0,0.8);
+            color: white;
+            padding: 2px 4px;
+            border-radius: 2px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .suggestion-info {
+            flex: 1;
+            min-width: 0;
+        }
+        
+        .suggestion-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: #ffffff;
+            line-height: 1.3;
+            margin-bottom: 4px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .suggestion-channel {
+            color: #aaaaaa;
+            font-size: 13px;
+            margin-bottom: 2px;
+        }
+        
+        .suggestion-meta {
+            color: #aaaaaa;
+            font-size: 13px;
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 998;
+            display: none;
+        }
+        
+        .overlay.visible {
+            display: block;
+        }
+        
+        @media (max-width: 1280px) {
+            .sidebar {
+                width: 350px;
+            }
+            .suggestion-thumbnail {
+                width: 150px;
+                height: 84px;
+            }
+        }
+        
+        @media (max-width: 1024px) {
+            .main-content {
+                flex-direction: column;
+            }
+            .sidebar {
+                width: 100%;
+            }
+            .video-suggestions {
+                flex-direction: row;
+                overflow-x: auto;
+                gap: 12px;
+                padding: 0 0 16px 0;
+            }
+            .suggestion-item {
+                flex-direction: column;
+                min-width: 210px;
+            }
+            .suggestion-thumbnail {
+                width: 210px;
+                height: 118px;
+            }
+            .sidebar-open {
+                margin-left: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    
+ 
+    <div class="header">
+        <div class="header-left">
+            <svg class="menu-icon" id="menuIcon" viewBox="0 0 24 24">
+                <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+            </svg>
+            <a href="/home" class="youtube-logo">
+                <div class="youtube-icon">▶</div>
+                <span style="font-size: 20px; font-weight: 500; margin-left: 2px;">Vidmax</span>
+            </a>
+        </div>
+        
+        <div class="search-container">
+            <input type="text" class="search-input" id="searchInput" placeholder="Search">
+            <div class="search-suggestions" id="searchSuggestions"></div>
+            <button class="search-button" id="searchButton">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="white">
+                    <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                </svg>
+            </button>
+        </div>
+        
+        <div class="header-right">
+       
+          <button class="create-btn">
+                <a href="{% url 'create' %}" class="create-btn">
+                <svg viewBox="0 0 24 24" width="24" height="24">
+                    <path d="M14 13h-3v3H9v-3H6v-2h3V8h2v3h3v2zM17 6H3c-1.1 0-2 .9-2 2v8c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 10H3V8h14v8z" fill="currentColor"/>
+                </svg>
+                <p style="font-weight: bold; font-size: 20px;">Create</p>
+                </a>
+          
+            </button>
+           
+           {%if request.user.is_authenticated%}
+            <button class="logout-btn">
+                <a href="{% url 'signout' %}" style="text-decoration: none; color: black; font-weight: bolder; font-size: 15px;">
+                    <p>Logout ➡️</p>
+                </a>
+            </button>
+            
+            {%else%}
+
+            <button class="login-btn">
+                <a href="{% url 'signin' %}" style="text-decoration: none; color: black; font-weight: bolder; font-size: 15px;">
+                    <p>⬅️Sign in </p>
+                </a>
+            </button>
+                
+            {%endif%}
+        </div>
+    </div>
+
+    <div class="sidebar-nav" id="sidebarNav">
+        <div class="nav-section">
+            <a href="/home">
+            <div class="nav-item active">
+                    
+                    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                    Home
+                </div>
+            </a>
+            <a href="/shorts">
+
+                <div class="nav-item">
+                    <svg class="nav-icon" viewBox="0 0 24 24"><path d="M18 4V3c0-.55-.45-1-1-1H5c-.55 0-1 .45-1 1v4c0 .55.45 1 1 1h12c.55 0 1-.45 1-1V6h2v10.5c0 .83-.67 1.5-1.5 1.5S16 17.33 16 16.5V15H5v1.5c0 .83-.67 1.5-1.5 1.5S2 17.33 2 16.5V3c0-1.1.9-2 2-2h12c1.1 0 2 .9 2 2v1z"/></svg>
+                    Shorts
+                </div>
+            </a>
+            <div class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-1 9H9V9h10v2zm-4 4H9v-2h6v2zm4-8H9V5h10v2z"/></svg>
+                Subscriptions
+            </div>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-title">You</div>
+            <div class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.25 2.52.77-1.28-3.52-2.09V8z"/></svg>
+                History
+            </div>
+            <div class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M14 10H2v2h12v-2zm0-4H2v2h12V6zm4 8v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zM2 16h8v-2H2v2z"/></svg>
+                Playlists
+            </div>
+            <div class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M10 8v8l6-4-6-4zm9-5H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"/></svg>
+                Your videos
+            </div>
+            <div class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M14.97 16.95L10 13.87V7h2v5.76l4.03 2.49-1.06 1.7zM12 3c-4.97 0-9 4.03-9 9s4.03 9 9 9 9-4.03 9-9-4.03-9-9-9zm0 16c-3.87 0-7-3.13-7-7s3.13-7 7-7 7 3.13 7 7-3.13 7-7 7z"/></svg>
+                Watch later
+            </div>
+            <div class="nav-item">
+                <svg class="nav-icon" viewBox="0 0 24 24"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                Liked videos
+            </div>
+        </div>
+        
+        <div class="nav-section">
+            <div class="nav-title">Subscriptions</div>
+            <div class="subscription-item">
+                <div class="subscription-avatar" style="background-color: #ff4444;">T</div>
+                TEDx Talks
+            </div>
+            <div class="subscription-item">
+                <div class="subscription-avatar" style="background-color: #ffa500;">K</div>
+                Knigra Deon
+            </div>
+            <div class="subscription-item">
+                <div class="subscription-avatar" style="background-color: #00ff00;">O</div>
+                The Organic Chemistry Tutor
+            </div>
+            <div class="subscription-item">
+                <div class="subscription-avatar" style="background-color: #8b4513;">E</div>
+                Engineering with Daniel
+            </div>
+            <div class="subscription-item">
+                <div class="subscription-avatar" style="background-color: #4169e1;">T</div>
+                Tech With Tim
+            </div>
+            <div class="subscription-item">
+                <div class="subscription-avatar" style="background-color: #32cd32;">A</div>
+                Anson
+            </div>
+        </div>
+    </div>
+ 
+    <div class="main-content" id="mainContent">
+        <div class="video-section">
+    <div class="video-container">
+    {% if video_type == "youtube" %}
+        <!-- YouTube video -->
+        <iframe id="main-video"
+            width="100%" height="460px"
+             data-type="youtube" 
+             data-id="{{ video.video_id }}"
+            src="https://www.youtube.com/embed/{{ video.video_id }}?autoplay=1&controls=1"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen>
+        </iframe>
+    {% elif video_type == "upload" %}
+        <!-- Uploaded video -->
+        <video id="main-video"
+            width="100%" height="460px"
+             data-type="upload"   
+             data-id="{{ uploadVideo.id }}"
+            controls autoplay>
+            <source src="{{ uploadVideo.video_file.url }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    {% endif %}
+</div>
+
+
+
+            <div class="video-title">A Day in the Life of a Tech Startup CEO</div>
+            
+            <div class="video-meta">
+                <div class="channel-info">
+                    <div class="channel-avatar">L</div>
+                    <div class="channel-details">
+                        <h3>Linq</h3>
+                        <div class="subscriber-count" id="subscriberCount">8.56K subscribers</div>
+                    </div>
+                    <button class="subscribe-button" id="subscribeButton">Subscribe</button>
+                </div>
+                
+                <div class="video-actions">
+                    <button class="action-button" id="likeButton">👍 <span id="likeCount">4K</span></button>
+                    <button class="action-button" id="dislikeButton">👎</button>
+                    <button class="action-button" id="shareButton">📤 Share</button>
+                     {% if video_type == 'upload' %}
+                        <a href="{% url 'download' uploadVideo.id %}" style="text-decoration: none;">
+                            <button class="action-button" id="downloadButton">💾 Download</button>
+                        </a>
+                    {% endif %}
+
+                    <button class="action-button" id="moreButton">⋯</button>
+                </div>
+            </div>
+
+            <div class="video-description" id="videoDescription">
+                <div class="description-header">
+                    <span>162K views</span>
+                    <span>6 months ago</span>
+                </div>
+                <div class="description-text">
+                    <div class="description-preview">
+                        Mondays start at 5 AM with an F3 workout, followed by sauna and cold plunge at Lifetime. By 8:30 AM, I'm in the office for an onboarding meeting to set the tone for the week. At 10 AM, our COO, David, leads a sales meeting, then we hold an interview and extend a same-day job offer. The day keeps moving—checking badges for an event, grabbing coffee, and diving into Monday Momentum to review wins, losses, and accountability. We wrap... <span class="show-more" id="showMore">more</span>
+                    </div>
+                    <div class="description-expanded" id="descriptionExpanded">
+                        Mondays start at 5 AM with an F3 workout, followed by sauna and cold plunge at Lifetime. By 8:30 AM, I'm in the office for an onboarding meeting to set the tone for the week. At 10 AM, our COO, David, leads a sales meeting, then we hold an interview and extend a same-day job offer. The day keeps moving—checking badges for an event, grabbing coffee, and diving into Monday Momentum to review wins, losses, and accountability. We wrap up with a team dinner and reflection on the day's accomplishments.
+                        
+                        This video gives you an authentic look into what it's really like running a tech startup - from the early morning routines that keep me energized, to the rapid-fire decision making that defines our culture. You'll see how we balance high-growth demands with team building, and why every day brings new challenges and opportunities.
+                        
+                        💼 Timestamps:
+                        0:00 - 5 AM Workout Routine
+                        3:15 - Morning Office Setup
+                        6:30 - Team Meetings & Hiring
+                        12:45 - Lunch & Strategy Session
+                        15:20 - Event Planning & Coffee Break
+                        17:10 - End of Day Reflection
+                        
+                        🔗 Follow our journey:
+                        Website: https://linq.com
+                        Twitter: @LinqStartup
+                        LinkedIn: Linq Technologies
+                        
+                        <span class="show-more" id="showLess" style="display: none;">Show less</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="comments-section">
+                <div class="comments-header">
+                    <div class="comments-count" id="commentsCount">71 Comments</div>
+                    <button class="sort-button" id="sortButton">
+                        ⚍ Sort by
+                    </button>
+                </div>
+
+                <div class="comment-input-container">
+                    <div class="comment-avatar"></div>
+                    <div class="comment-input-wrapper">
+                        <input type="text" class="comment-input-field" id="commentInput" placeholder="Add a comment...">
+                        <div class="comment-actions" id="commentActions">
+                            <button class="cancel-button" id="cancelComment">Cancel</button>
+                            <button class="comment-button" id="submitComment">Comment</button>
+                        </div>
+                    </div>
+                </div>
+                
+
+                {%for comment in comments%}
+                <div class="comment">
+                    
+                    <i class="fa fa-user-circle" style="font-size:36px"></i>
+
+                    <div class="comment-content">
+                        <div class="comment-header">
+                            <div class="comment-author">@{{comment.user.username}}</div>
+                            <div class="comment-time">{{comment.created_at}}</div>
+                        </div>
+                        <div class="comment-text">{{comment.comment}}</div>
+                        <div class="comment-buttons">
+                            <button class="comment-button-action" data-action="like">
+                                👍 <span>17</span>
+                            </button>
+                            <button class="comment-button-action" data-action="dislike">👎</button>
+                            <button class="comment-button-action" data-action="reply">Reply</button>
+                        </div>
+                    </div>
+                </div>
+                {%endfor%}
+
+            </div>
+        </div>
+
+        <div class="sidebar">
+            <div class="video-suggestions">
+               
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Search suggestions data
+        const searchSuggestions = [
+            'day in the life',
+            'day in the life of a ceo',
+            'day in the life startup',
+            'day in the life tech',
+            'day in the life entrepreneur',
+            'daniel bourke',
+            'dan martell',
+            'startup tips',
+            'tech startup',
+            'startup founder'
+        ];
+
+        // Sidebar toggle functionality
+        const menuIcon = document.getElementById('menuIcon');
+        const sidebarNav = document.getElementById('sidebarNav');
+        const overlay = document.getElementById('overlay');
+        const body = document.body;
+
+        menuIcon.addEventListener('click', function() {
+            sidebarNav.classList.toggle('open');
+            overlay.classList.toggle('visible');
+            if (window.innerWidth > 1024) {
+                body.classList.toggle('sidebar-open');
+            }
+        });
+
+        overlay.addEventListener('click', function() {
+            sidebarNav.classList.remove('open');
+            overlay.classList.remove('visible');
+            body.classList.remove('sidebar-open');
+        });
+
+        // Search functionality
+        const searchInput = document.getElementById('searchInput');
+        const searchSuggestions_div = document.getElementById('searchSuggestions');
+        const searchButton = document.getElementById('searchButton');
+
+        searchInput.addEventListener('input', function() {
+            const query = this.value.toLowerCase().trim();
+            
+            if (query.length > 0) {
+                const filteredSuggestions = searchSuggestions.filter(suggestion => 
+                    suggestion.toLowerCase().includes(query)
+                );
+                
+                if (filteredSuggestions.length > 0) {
+                    searchSuggestions_div.innerHTML = filteredSuggestions.map(suggestion => 
+                        `<div class="suggestion-item-search" data-suggestion="${suggestion}">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="#aaaaaa">
+                                <path d="M15.5 14h-.79l-.28-.27C15.41 12.59 16 11.11 16 9.5 16 5.91 13.09 3 9.5 3S3 5.91 3 9.5 5.91 16 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"/>
+                            </svg>
+                            ${suggestion}
+                        </div>`
+                    ).join('');
+                    searchSuggestions_div.style.display = 'block';
+                } else {
+                    searchSuggestions_div.style.display = 'none';
+                }
+            } else {
+                searchSuggestions_div.style.display = 'none';
+            }
+        });
+
+        searchInput.addEventListener('focus', function() {
+            if (this.value.trim().length > 0) {
+                searchSuggestions_div.style.display = 'block';
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.search-container')) {
+                searchSuggestions_div.style.display = 'none';
+            }
+        });
+
+        searchSuggestions_div.addEventListener('click', function(e) {
+            const suggestionItem = e.target.closest('.suggestion-item-search');
+            if (suggestionItem) {
+                const suggestion = suggestionItem.dataset.suggestion;
+                searchInput.value = suggestion;
+                searchSuggestions_div.style.display = 'none';
+                performSearch(suggestion);
+            }
+        });
+
+        searchButton.addEventListener('click', function() {
+            if (searchInput.value.trim()) {
+                performSearch(searchInput.value);
+            }
+        });
+
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && this.value.trim()) {
+                performSearch(this.value);
+                searchSuggestions_div.style.display = 'none';
+            }
+        });
+
+        function performSearch(query) {
+            console.log('Searching for:', query);
+            // In a real implementation, this would redirect or update the page content
+        }
+
+
+        
+        // Comment input functionality
+        const commentInput = document.getElementById('commentInput');
+        const commentActions = document.getElementById('commentActions');
+        const submitCommentBtn = document.getElementById('submitComment');
+        const cancelCommentBtn = document.getElementById('cancelComment');
+
+        commentInput.addEventListener('input', function() {
+            const hasText = this.value.trim().length > 0;
+            
+            if (hasText) {
+                commentActions.classList.add('visible');
+                submitCommentBtn.classList.add('active');
+            } else {
+                submitCommentBtn.classList.remove('active');
+            }
+        });
+
+        commentInput.addEventListener('focus', function() {
+            commentActions.classList.add('visible');
+        });
+
+        cancelCommentBtn.addEventListener('click', function() {
+            commentInput.value = '';
+            commentActions.classList.remove('visible');
+            submitCommentBtn.classList.remove('active');
+            commentInput.blur();
+        });
+
+        submitCommentBtn.addEventListener('click', function() {
+            if (this.classList.contains('active')) {
+                const commentText = commentInput.value.trim();
+                if (commentText) {
+                   // addNewComment(commentText);
+                    //commentInput.value = '';
+                    commentActions.classList.remove('visible');
+                    submitCommentBtn.classList.remove('active');
+                    commentInput.blur();
+                }
+            }
+        });
+
+        function addNewComment(text) {
+            const commentsSection = document.querySelector('.comments-section');
+            const newComment = document.createElement('div');
+            newComment.className = 'comment';
+            newComment.innerHTML = `
+                <i class="fa fa-user-circle" style="font-size:36px"></i>
+                <div class="comment-content">
+                    <div class="comment-header">
+                        <div class="comment-author">@You</div>
+                        <div class="comment-time">just now</div>
+                    </div>
+                    <div class="comment-text">${text}</div>
+                    <div class="comment-buttons">
+                        <button class="comment-button-action" data-action="like">
+                            👍 <span>0</span>
+                        </button>
+                        <button class="comment-button-action" data-action="dislike">👎</button>
+                        <button class="comment-button-action" data-action="reply">Reply</button>
+                    </div>
+                </div>
+            `;
+            
+            // Insert after comment input
+            const commentInputContainer = document.querySelector('.comment-input-container');
+            commentInputContainer.insertAdjacentElement('afterend', newComment);
+            
+            // Update comment count
+            const commentsCount = document.getElementById('commentsCount');
+            const currentCount = parseInt(commentsCount.textContent.split(' ')[0]);
+            commentsCount.textContent = `${currentCount + 1} Comments`;
+            
+            // Add event listeners to new comment buttons
+            addCommentButtonListeners(newComment);
+        }
+
+        // Subscribe button
+        const subscribeButton = document.getElementById('subscribeButton');
+        const subscriberCount = document.getElementById('subscriberCount');
+
+        subscribeButton.addEventListener('click', function() {
+            if (this.textContent === 'Subscribe') {
+                this.textContent = 'Subscribed';
+                this.classList.add('subscribed');
+                // Increase subscriber count
+                const currentCount = parseFloat(subscriberCount.textContent.replace('K subscribers', ''));
+                subscriberCount.textContent = `${(currentCount + 0.01).toFixed(2)}K subscribers`;
+            } else {
+                this.textContent = 'Subscribe';
+                this.classList.remove('subscribed');
+                // Decrease subscriber count
+                const currentCount = parseFloat(subscriberCount.textContent.replace('K subscribers', ''));
+                subscriberCount.textContent = `${(currentCount - 0.01).toFixed(2)}K subscribers`;
+            }
+        });
+
+        // Video action buttons
+        const likeButton = document.getElementById('likeButton');
+        const dislikeButton = document.getElementById('dislikeButton');
+        const shareButton = document.getElementById('shareButton');
+        const downloadButton = document.getElementById('downloadButton');
+        const moreButton = document.getElementById('moreButton');
+        const likeCount = document.getElementById('likeCount');
+
+        let isLiked = false;
+        let isDisliked = false;
+        let currentLikes = 4000;
+
+        likeButton.addEventListener('click', function() {
+            if (isLiked) {
+                isLiked = false;
+                this.classList.remove('liked');
+                currentLikes--;
+            } else {
+                isLiked = true;
+                this.classList.add('liked');
+                currentLikes++;
+                if (isDisliked) {
+                    isDisliked = false;
+                    dislikeButton.classList.remove('liked');
+                }
+            }
+            likeCount.textContent = formatCount(currentLikes);
+        });
+
+        dislikeButton.addEventListener('click', function() {
+            if (isDisliked) {
+                isDisliked = false;
+                this.classList.remove('liked');
+            } else {
+                isDisliked = true;
+                this.classList.add('liked');
+                if (isLiked) {
+                    isLiked = false;
+                    likeButton.classList.remove('liked');
+                    currentLikes--;
+                    likeCount.textContent = formatCount(currentLikes);
+                }
+            }
+        });
+
+        shareButton.addEventListener('click', function() {
+            if (navigator.share) {
+                navigator.share({
+                    title: 'A Day in the Life of a Tech Startup CEO',
+                    url: window.location.href
+                });
+            } else {
+                // Fallback: copy to clipboard
+                navigator.clipboard.writeText(window.location.href);
+                alert('Link copied to clipboard!');
+            }
+        });
+
+        downloadButton.addEventListener('click', function() {
+            alert('Download functionality would be implemented here');
+        });
+
+        moreButton.addEventListener('click', function() {
+            alert('More options menu would appear here');
+        });
+
+        function formatCount(count) {
+            if (count >= 1000) {
+                return (count / 1000).toFixed(count >= 10000 ? 0 : 1) + 'K';
+            }
+            return count.toString();
+        }
+
+        // Description expand/collapse
+        const showMore = document.getElementById('showMore');
+        const showLess = document.getElementById('showLess');
+        const descriptionExpanded = document.getElementById('descriptionExpanded');
+
+        showMore.addEventListener('click', function() {
+            document.querySelector('.description-preview').style.display = 'none';
+            descriptionExpanded.style.display = 'block';
+            showLess.style.display = 'inline';
+        });
+
+        showLess.addEventListener('click', function() {
+            document.querySelector('.description-preview').style.display = 'block';
+            descriptionExpanded.style.display = 'none';
+        });
+
+        // Comment interactions
+        function addCommentButtonListeners(commentElement) {
+            const buttons = commentElement.querySelectorAll('.comment-button-action');
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const action = this.dataset.action;
+                    
+                    if (action === 'like') {
+                        this.classList.toggle('liked');
+                        const countSpan = this.querySelector('span');
+                        if (countSpan) {
+                            let count = parseInt(countSpan.textContent);
+                            if (this.classList.contains('liked')) {
+                                count++;
+                            } else {
+                                count--;
+                            }
+                            countSpan.textContent = count;
+                        }
+                    } else if (action === 'dislike') {
+                        this.classList.toggle('liked');
+                    } else if (action === 'reply') {
+                        alert('Reply functionality would be implemented here');
+                    }
+                });
+            });
+        }
+
+        // Add listeners to existing comments
+        document.querySelectorAll('.comment').forEach(addCommentButtonListeners);
+
+        // Sort button functionality
+        const sortButton = document.getElementById('sortButton');
+        sortButton.addEventListener('click', function() {
+            alert('Sort options menu would appear here');
+        });
+
+        // Video suggestion interactions
+        document.querySelectorAll('.suggestion-item').forEach(item => {
+            item.addEventListener('click', function() {
+                const videoId = this.dataset.video;
+                const title = this.querySelector('.suggestion-title').textContent;
+                console.log('Would play video:', videoId, title);
+                // In a real implementation, this would navigate to the new video
+            });
+        });
+
+        // Header button interactions
+        document.getElementById('createButton').addEventListener('click', function() {
+            alert('Create menu would appear here');
+        });
+
+        document.getElementById('notificationButton').addEventListener('click', function() {
+            alert('Notifications panel would appear here');
+        });
+
+        // Navigation item interactions
+        document.querySelectorAll('.nav-item, .subscription-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // Remove active class from all nav items
+                document.querySelectorAll('.nav-item').forEach(navItem => {
+                    navItem.classList.remove('active');
+                });
+                
+                // Add active class to clicked item (only for nav-item, not subscription-item)
+                if (this.classList.contains('nav-item')) {
+                    this.classList.add('active');
+                }
+                
+                console.log('Navigation clicked:', this.textContent.trim());
+            });
+        });
+
+        // Initialize progress bar
+        updateProgress();
+
+        // Window resize handler
+        window.addEventListener('resize', function() {
+            if (window.innerWidth <= 1024) {
+                body.classList.remove('sidebar-open');
+            }
+        });
+    </script>
+
+    <script>
+           let submit = document.querySelector('#submitComment')
+           let mainVideo = document.querySelector('#main-video');
+            let video_id = mainVideo.dataset.id;       // ✅ will be YouTube ID (string) or Upload ID (int as string)
+            let video_type = mainVideo.dataset.type;   // ✅ "youtube" or "upload"
+            console.log(video_id)
+           submit.addEventListener('click', (e)=>{
+               e.preventDefault();
+               $.ajax({
+                type:'POST',
+                url:'/comment/',    
+                data:{
+                    'comment':document.querySelector('#commentInput').value,
+                    'video_id':video_id,
+                    'video_type':video_type,
+                    'csrfmiddlewaretoken': '{{ csrf_token }}'
+                },
+                success: function(res){
+                    let text = document.querySelector('#commentInput').value
+                    addNewComment(text)
+                    document.querySelector('#commentInput').value=''
+                },
+                error: function(xhr, status, error){
+                    console.error('Error submitting comment:', error);
+                    if (xhr.status === 401) {
+                        alert('You must be logged in to comment.');
+                          document.querySelector('#commentInput').value=''
+                    } else {
+                        alert('An error occurred while submitting your comment. Please try again.');
+                    }
+                }
+            })
+           })
+           
+    </script>
+
+    <script>
+ const API_KEY ="AIzaSyBgX94QDTO7OCN9MUEVVAeSTFW3XCJCQww";
+
+// Get query from URL parameter if exists
+const urlParams = new URLSearchParams(window.location.search);
+let query = urlParams.get("q") || "tech startup";
+
+let videos = [];
+let nextPageToken = null;
+
+function fetchVideos(pageToken = "") {
+  $.ajax({
+    url: "https://www.googleapis.com/youtube/v3/search",
+    method: "GET",
+    data: {
+      part: "snippet",
+      q: query + " -shorts",
+      type: "video",
+      maxResults: 8,
+      key: API_KEY,
+      pageToken: pageToken,
+      videoDuration: "medium"
+    },
+    success: function(response) {
+      // Clear grid for fresh content
+      if (!pageToken) $(".video-grid").empty();
+      
+      // Get video IDs to check availability
+      const videoIds = response.items.map(item => item.id.videoId).join(',');
+      
+      // Check video details to filter out restricted videos
+      $.ajax({
+        url: "https://www.googleapis.com/youtube/v3/videos",
+        method: "GET",
+        data: {
+          part: "status",
+          id: videoIds,
+          key: API_KEY
+        },
+        success: function(detailsResponse) {
+          // Create a map of available video IDs
+          const availableVideoIds = new Set();
+          detailsResponse.items.forEach(item => {
+            if (item.status.embeddable && item.status.publicStatsViewable) {
+              availableVideoIds.add(item.id);
+            }
+          });
+          
+          // Filter original response to only include available videos
+          const availableVideos = response.items.filter(item => 
+            availableVideoIds.has(item.id.videoId)
+          );
+          
+          videos = videos.concat(availableVideos);
+
+          availableVideos.forEach(item => {
+            let videoId = item.id.videoId;
+            let title = item.snippet.title;
+            let channel = item.snippet.channelTitle;
+            let thumbnail = item.snippet.thumbnails.medium.url;
+            let publishTime = new Date(item.snippet.publishedAt).toLocaleDateString();
+                 
+          
+
+            $(".video-suggestions").append(`
+            <div class="suggestion-item" data-video="${videoId}">
+             <a href="/video_view/${videoId}">
+            <div class="suggestion-thumbnail">
+                <img src="${thumbnail}" alt="${title}" />
+            </div>
+            </a>
+            <div class="suggestion-info">
+                <div class="suggestion-title">${title}</div>
+                <div class="suggestion-channel">${channel}</div>
+                <div class="suggestion-meta">Published ${publishTime}</div>
+            </div>
+            </div>
+            `);
+          });
+
+          if (response.nextPageToken && videos.length < 8) {
+            fetchVideos(response.nextPageToken);
+          }
+        },
+        error: function(err) {
+          console.error("Video details API Error:", err);
+          // Fallback: display all videos if status check fails
+          videos = videos.concat(response.items);
+          response.items.forEach(item => {
+            let videoId = item.id.videoId;
+            let title = item.snippet.title;
+            let channel = item.snippet.channelTitle;
+            let thumbnail = item.snippet.thumbnails.medium.url;
+            let publishTime = new Date(item.snippet.publishedAt).toLocaleDateString();
+
+            $(".video-suggestion").append(`
+              <div class="suggestion-item" data-video="${videoId}">
+             <a href="/video_view/${videoId}">
+            <div class="suggestion-thumbnail">
+                <img src="${thumbnail}" alt="${title}" />
+            </div>
+            </a>
+            <div class="suggestion-info">
+                <div class="suggestion-title">${title}</div>
+                <div class="suggestion-channel">${channel}</div>
+                <div class="suggestion-meta">Published ${publishTime}</div>
+            </div>
+            </div>
+            `);
+          });
+        }
+      });
+    },
+    error: function(err) {
+      console.error("API Error:", err);
+    }
+  });
+}
+
+// Attach click event to pills
+document.querySelectorAll(".category-pills .pill").forEach(pill => {
+  pill.addEventListener("click", function() {
+    // Get pill text
+    const selectedQuery = this.textContent.trim();
+
+    // Reload page with new query as URL parameter
+    const newUrl = window.location.pathname + "?q=" + encodeURIComponent(selectedQuery);
+    window.location.href = newUrl;
+  });
+});
+
+// Set active pill based on URL
+document.querySelectorAll(".category-pills .pill").forEach(pill => {
+  if (pill.textContent.trim() === query) pill.classList.add("active");
+  else pill.classList.remove("active");
+});
+
+// Fetch videos for the current query
+fetchVideos();
+    </script>
+
+
+</body>
+</html>
